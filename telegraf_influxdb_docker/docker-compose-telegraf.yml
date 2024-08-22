@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  influxdb:
+    image: influxdb:latest
+    network_mode: host
+    container_name: influxdb
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+
+  telegraf:
+    image: telegraf:latest
+    network_mode: host
+    container_name: telegraf
+    environment:
+      - INFLUX_URL=${INFLUX_URL}
+      - INFLUX_ORG=${INFLUX_ORG}
+      - INFLUX_BUCKET=${INFLUX_BUCKET}
+    volumes:
+      - ./telegraf/:/etc/telegraf/:rw
+      - /:/rootfs:ro
+      - /dev:/dev
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+  
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    network_mode: host
+    depends_on:
+      - influxdb
+    environment:
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - grafana_configs:/etc/grafana:ro
+
+volumes:
+  influxdb_data:
+  grafana_data:
+  grafana_configs:
+
