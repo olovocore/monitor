@@ -21,7 +21,7 @@ echo "INFLUX_TOKEN=$token"
 envsubst < ./telegraf.conf.template > ./telegraf.conf
 sudo mv ./telegraf.conf ./telegraf
 
-docker compose -f docker-compose-telegraf.yml restart telegraf
+docker compose restart telegraf
 
 response=$(curl -i -s -X POST http://localhost:3000/login \
   -H "Content-Type: application/json" \

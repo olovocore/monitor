@@ -2,10 +2,6 @@
 
 export $(grep -v '^#' .env | xargs)
 
-docker exec -it cadvisor /bin/sh -c "chown root:root /var/run/docker.sock"
-
-docker compose -f docker-compose-prom.yml restart cadvisor 
-
 response=$(curl -i -sS -X POST http://localhost:3000/login \
     -H "Content-Type: application/json" \
     -d "{\"user\": \"$GF_SECURITY_ADMIN_USER\", \"password\": \"$GF_SECURITY_ADMIN_PASSWORD\"}")
